@@ -3,11 +3,13 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import NavBar from "~/components/NavBar";
+import Header from "~/components/Header";
 
 export default function Home() {
   return (
     <Box>
       <NavBar />
+      <Header />
       <Box
         display="grid"
         gridTemplateRows="20px 1fr 20px"
