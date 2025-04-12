@@ -3,11 +3,15 @@ import { defineStyleConfig } from "@chakra-ui/react";
 const Button = defineStyleConfig({
   variants: {
     sunny: {
-      bg: "orange.400",
+      bg: "#D4B36A",
       color: "white",
-      borderRadius: "xl",
+      paddingX: 6,
+      paddingY: 4,
+      fontWeight: "medium",
+      fontSize: "lg",
+      fontFamily: "var(--font-montserrat)",
       _hover: {
-        bg: "orange.500",
+        bg: "#E6C88D",
       },
     },
   },

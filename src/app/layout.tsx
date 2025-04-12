@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { ColorModeScript } from "@chakra-ui/react";
 import "./globals.css";
 import { Provider } from "~/components/ui/provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
@@ -29,7 +24,7 @@ export default function RootLayout({
       <head>
         <ColorModeScript initialColorMode="system" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={montserrat.variable}>
         <Provider>{children}</Provider>
       </body>
     </html>
