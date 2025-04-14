@@ -19,12 +19,12 @@ import { useState } from "react";
 import { BsArrow90DegRight } from "react-icons/bs";
 import { TbArrowsUpRight } from "react-icons/tb";
 import { FaLocationArrow } from "react-icons/fa";
-
+import { useSession } from "~/hooks/useSession";
 export default function Header() {
   const [location, setLocation] = useState("Cairo, Egypt");
   const [date, setDate] = useState("19 March 2025");
   const [guests, setGuests] = useState("2 Adults, 1 Child");
-
+  const { username } = useSession();
   return (
     <Box
       position="relative"
@@ -88,7 +88,7 @@ export default function Header() {
             fontWeight="bold"
             fontFamily="var(--font-montserrat)"
           >
-            Hey!
+            {username ? "Hey, " + username + "!" : " Hey!"}
           </Heading>
           <Heading
             as="h2"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
 import {
   Box,
   Flex,
@@ -33,7 +34,7 @@ import {
   LuPackage,
 } from "react-icons/lu";
 import Image from "next/image";
-
+import { useSession } from "~/hooks/useSession";
 interface NavLinkProps extends LinkProps {
   children: string;
 }
@@ -68,9 +69,9 @@ const NavLink = ({ children, ...props }: NavLinkProps) => {
 };
 
 export default function NavBar() {
+  const { isAuthenticated, logout, setUsername } = useSession();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -114,11 +115,11 @@ export default function NavBar() {
   };
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
+    setUsername("George");
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();
   };
 
   const profileMenu = [
@@ -366,7 +367,7 @@ export default function NavBar() {
               </Text>
             </HStack>
 
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <>
                 <Box
                   height="24px"

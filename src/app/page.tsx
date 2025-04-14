@@ -4,12 +4,15 @@ import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import NavBar from "~/components/NavBar";
 import Header from "~/components/Header";
-
+import { FeaturedHotels } from "~/components/FeaturedHotels";
+import { PopularDestinations } from "~/components/PopularDestinations";
 export default function Home() {
   return (
     <Box>
       <NavBar />
       <Header />
+      <FeaturedHotels />
+      <PopularDestinations />
       <Box
         display="grid"
         gridTemplateRows="20px 1fr 20px"

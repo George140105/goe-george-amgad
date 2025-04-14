@@ -11,6 +11,13 @@ const theme = extendTheme({
     initialColorMode: "system",
     useSystemColorMode: true,
   },
+  styles: {
+    global: {
+      body: {
+        bg: "#121212",
+      },
+    },
+  },
   components: {
     Button,
   },
