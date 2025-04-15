@@ -3,8 +3,9 @@ import { Box, IconButton, Text, Flex } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { LargeCard } from "./LargeCard";
 import { ThinCard } from "./ThinCard";
+import MediumCard from "./MediumCard";
 
-type CardVariant = "large" | "thin";
+type CardVariant = "large" | "thin" | "medium";
 
 interface BaseCarouselItem {
   image: string;
@@ -22,17 +23,22 @@ interface ThinCarouselItem extends BaseCarouselItem {
   aspectRatio?: number;
 }
 
+interface MediumCarouselItem extends BaseCarouselItem {
+  description: string;
+  href: string;
+}
+
 interface CarouselProps {
   title: string;
   variant?: CardVariant;
   itemsPerPage?: number;
-  items: LargeCarouselItem[] | ThinCarouselItem[];
+  items: LargeCarouselItem[] | ThinCarouselItem[] | MediumCarouselItem[];
 }
 
 export function Carousel({
   title,
   variant = "large",
-  itemsPerPage = variant === "large" ? 4 : 6,
+  itemsPerPage = variant === "large" ? 4 : variant === "medium" ? 3 : 6,
   items,
 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,7 +71,8 @@ export function Carousel({
     setTimeout(() => setIsAnimating(false), 500);
   };
 
-  const cardWidth = variant === "large" ? "300px" : "200px";
+  const cardWidth =
+    variant === "large" ? "300px" : variant === "medium" ? "400px" : "200px";
 
   return (
     <Box position="relative">
@@ -112,6 +119,8 @@ export function Carousel({
             >
               {variant === "large" ? (
                 <LargeCard {...(item as LargeCarouselItem)} />
+              ) : variant === "medium" ? (
+                <MediumCard {...(item as MediumCarouselItem)} />
               ) : (
                 <ThinCard {...(item as ThinCarouselItem)} />
               )}
