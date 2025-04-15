@@ -1,19 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-
+import { useState } from "react";
 import {
   Box,
   Flex,
   Button,
   IconButton,
-  Input,
   HStack,
   Text,
   Link,
-  InputGroup,
-  InputLeftElement,
-  Collapse,
   LinkProps,
   VStack,
   Icon,
@@ -22,10 +17,8 @@ import {
   PopoverContent,
   PopoverBody,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
 import {
   LuGlobe,
-  LuMapPin,
   LuHeart,
   LuShoppingCart,
   LuUser,
@@ -35,16 +28,11 @@ import {
 } from "react-icons/lu";
 import Image from "next/image";
 import { useSession } from "~/hooks/useSession";
+import { SearchBox } from "./ui/SearchBox";
+
 interface NavLinkProps extends LinkProps {
   children: string;
 }
-
-const CITIES = [
-  { name: "Cairo", description: "City in Egypt" },
-  { name: "Alexandria", description: "City in Egypt" },
-  { name: "Hurghada", description: "City in Egypt" },
-  { name: "Luxor", description: "City in Egypt" },
-];
 
 const NavLink = ({ children, ...props }: NavLinkProps) => {
   const [prefix, suffix] = children.split("Egy");
@@ -71,48 +59,7 @@ const NavLink = ({ children, ...props }: NavLinkProps) => {
 export default function NavBar() {
   const { isAuthenticated, logout, setUsername } = useSession();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
-      ) {
-        setIsSearchOpen(false);
-      }
-    };
-
-    if (isSearchOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isSearchOpen]);
-
-  const filteredCities = CITIES.filter(
-    (city) =>
-      searchValue === "" ||
-      city.name.toLowerCase().startsWith(searchValue.toLowerCase())
-  );
-
-  const handleSearchClick = () => {
-    setIsSearchOpen(!isSearchOpen);
-    if (!isSearchOpen) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-    }
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
 
   const handleLogin = () => {
     setUsername("George");
@@ -140,11 +87,10 @@ export default function NavBar() {
           right="0"
           bottom="0"
           bg="blackAlpha.600"
-          zIndex="overlay"
+          zIndex={9998}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsSearchOpen(false);
-              setSearchValue("");
             }
           }}
         />
@@ -153,7 +99,7 @@ export default function NavBar() {
         as="nav"
         position="sticky"
         top="0"
-        zIndex="sticky"
+        zIndex={9999}
         bg="black"
         color="white"
         boxShadow="sm"
@@ -186,133 +132,11 @@ export default function NavBar() {
               />
             </Box>
 
-            <Flex align="center" ref={searchContainerRef} position="relative">
-              <HStack spacing={4} width="full">
-                {!isSearchOpen && (
-                  <IconButton
-                    aria-label="Search"
-                    icon={<SearchIcon />}
-                    variant="ghost"
-                    size="md"
-                    onClick={handleSearchClick}
-                    color="#D4B36A"
-                    bg="#333333"
-                    borderRadius="full"
-                    w="40px"
-                    h="40px"
-                    _hover={{
-                      bg: "#404040",
-                      color: "#E6C88D",
-                    }}
-                  />
-                )}
-                <Box
-                  style={{
-                    width: isSearchOpen ? "300px" : "0",
-                    overflow: "hidden",
-                    transition: "width 0.3s ease-in-out",
-                  }}
-                >
-                  <InputGroup size="md">
-                    <InputLeftElement pointerEvents="none">
-                      <SearchIcon color="#D4B36A" />
-                    </InputLeftElement>
-                    <Input
-                      ref={searchInputRef}
-                      placeholder="Search..."
-                      value={searchValue}
-                      onChange={handleSearchChange}
-                      bg="#333333"
-                      border="none"
-                      color="#D4B36A"
-                      w="300px"
-                      _placeholder={{ color: "#D4B36A", opacity: 0.7 }}
-                      _focus={{
-                        boxShadow: "none",
-                        borderColor: "transparent",
-                      }}
-                      _hover={{
-                        borderColor: "transparent",
-                      }}
-                    />
-                  </InputGroup>
-                  {isSearchOpen && (
-                    <Box
-                      position="absolute"
-                      top="100%"
-                      left="0"
-                      width="300px"
-                      bg="#333333"
-                      borderRadius="md"
-                      mt={2}
-                      py={2}
-                      boxShadow="lg"
-                      zIndex={2}
-                    >
-                      <Text px={4} py={2} color="#D4B36A" fontSize="sm">
-                        {searchValue === "" ? "Most popular" : "Locations"}
-                      </Text>
-                      <VStack align="stretch" spacing={1}>
-                        {filteredCities.map((city) => (
-                          <Box
-                            key={city.name}
-                            px={4}
-                            py={2}
-                            _hover={{ bg: "#404040" }}
-                            cursor="pointer"
-                          >
-                            <HStack spacing={3}>
-                              <Box
-                                bg="white"
-                                p={2}
-                                borderRadius="md"
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                              >
-                                <Icon
-                                  as={LuMapPin}
-                                  color="#D4B36A"
-                                  boxSize={5}
-                                />
-                              </Box>
-                              <Box>
-                                <Text color="white" fontSize="md">
-                                  {city.name}
-                                </Text>
-                                <Text color="gray.400" fontSize="xs">
-                                  {city.description}
-                                </Text>
-                              </Box>
-                            </HStack>
-                          </Box>
-                        ))}
-                      </VStack>
-                      <Box
-                        px={4}
-                        py={2}
-                        borderTop="1px solid"
-                        borderColor="gray.600"
-                        mt={2}
-                      >
-                        <Link
-                          color="#D4B36A"
-                          fontSize="sm"
-                          display="flex"
-                          alignItems="center"
-                          _hover={{ color: "#E6C88D" }}
-                        >
-                          See all results for "{searchValue}"
-                          <Box as="span" ml="auto">
-                            →
-                          </Box>
-                        </Link>
-                      </Box>
-                    </Box>
-                  )}
-                </Box>
-              </HStack>
-            </Flex>
+            <SearchBox
+              icon="search"
+              isSearchOpen={isSearchOpen}
+              onSearchOpen={setIsSearchOpen}
+            />
           </HStack>
 
           {/* Navigation Links */}

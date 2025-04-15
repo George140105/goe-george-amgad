@@ -14,23 +14,33 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { LuCalendar, LuUsers } from "react-icons/lu";
+import { LuUsers } from "react-icons/lu";
 import { useState } from "react";
-import { BsArrow90DegRight } from "react-icons/bs";
-import { TbArrowsUpRight } from "react-icons/tb";
 import { FaLocationArrow } from "react-icons/fa";
 import { useSession } from "~/hooks/useSession";
+import { SearchBox } from "./ui/SearchBox";
+import { DateRangePicker } from "./ui/DateRangePicker";
+
 export default function Header() {
-  const [location, setLocation] = useState("Cairo, Egypt");
-  const [date, setDate] = useState("19 March 2025");
+  const [location, setLocation] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [guests, setGuests] = useState("2 Adults, 1 Child");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { username } = useSession();
+
+  const handleDateChange = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
   return (
     <Box
       position="relative"
       height="600px"
       width="100%"
       overflow="hidden"
+      borderBottom="1px solid red"
       _before={{
         content: '""',
         position: "absolute",
@@ -40,7 +50,6 @@ export default function Header() {
         bottom: 0,
         background:
           "linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7))",
-        zIndex: 1,
       }}
     >
       {/* Background Image */}
@@ -57,12 +66,7 @@ export default function Header() {
       />
 
       {/* Content */}
-      <Container
-        maxW="container.xl"
-        position="relative"
-        zIndex={2}
-        height="100%"
-      >
+      <Container maxW="container.xl" position="relative" height="100%">
         <Flex
           direction="column"
           justify="center"
@@ -108,50 +112,29 @@ export default function Header() {
             bg="rgba(255, 255, 255, 0.1)"
             backdropFilter="blur(8px)"
             p={6}
-            width="100%"
             boxShadow="xl"
             border="1px solid rgba(255, 255, 255, 0.2)"
             borderRadius="full"
+            position="relative"
           >
             <HStack spacing={4} justify="space-between" width="100%">
-              <InputGroup size="lg" flex={1}>
-                <InputLeftElement pointerEvents="none">
-                  <SearchIcon color="#D4B36A" />
-                </InputLeftElement>
-                <Input
+              <Box flex={1}>
+                <SearchBox
+                  icon="location"
+                  isSearchOpen={isSearchOpen}
+                  onSearchOpen={setIsSearchOpen}
+                  placeholder="Where do you want to go?"
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  color="white"
-                  border="none"
-                  _focus={{ boxShadow: "none" }}
-                  _placeholder={{ color: "white" }}
-                  sx={{
-                    "&::placeholder": { color: "white" },
-                    "&::-webkit-input-placeholder": { color: "white" },
-                    "&::-moz-placeholder": { color: "white" },
-                    "&:-ms-input-placeholder": { color: "white" },
-                  }}
+                  onChange={setLocation}
                 />
-              </InputGroup>
-              <InputGroup size="lg" flex={1}>
-                <InputLeftElement pointerEvents="none">
-                  <Icon as={LuCalendar} color="#D4B36A" />
-                </InputLeftElement>
-                <Input
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  color="white"
-                  border="none"
-                  _focus={{ boxShadow: "none" }}
-                  _placeholder={{ color: "white" }}
-                  sx={{
-                    "&::placeholder": { color: "white" },
-                    "&::-webkit-input-placeholder": { color: "white" },
-                    "&::-moz-placeholder": { color: "white" },
-                    "&:-ms-input-placeholder": { color: "white" },
-                  }}
+              </Box>
+              <Box flex={1}>
+                <DateRangePicker
+                  startDate={startDate}
+                  endDate={endDate}
+                  onChange={handleDateChange}
                 />
-              </InputGroup>
+              </Box>
               <InputGroup size="lg" flex={1}>
                 <InputLeftElement pointerEvents="none">
                   <Icon as={LuUsers} color="#D4B36A" />

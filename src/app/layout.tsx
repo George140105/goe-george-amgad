@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import { ColorModeScript } from "@chakra-ui/react";
 import "./globals.css";
 import { Provider } from "~/components/ui/provider";
+import Footer from "~/components/Footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -25,7 +26,10 @@ export default function RootLayout({
         <ColorModeScript initialColorMode="system" />
       </head>
       <body className={montserrat.variable}>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          <Footer />
+        </Provider>
       </body>
     </html>
   );

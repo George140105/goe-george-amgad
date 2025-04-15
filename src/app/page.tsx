@@ -12,7 +12,7 @@ import { PopularCities } from "~/components/PopularCities";
 
 export default function Home() {
   return (
-    <Box>
+    <div>
       <NavBar />
       <Header />
       <FeaturedHotels />
@@ -21,6 +21,6 @@ export default function Home() {
       <Features />
       <PopularCities />
       <BookingCTA />
-    </Box>
+    </div>
   );
 }
