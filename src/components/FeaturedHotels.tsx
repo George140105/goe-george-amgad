@@ -54,7 +54,7 @@ const featuredHotels = [
 
 export function FeaturedHotels() {
   return (
-    <Box px={{ base: 4, md: 8 }} py={8}>
+    <Box px={{ base: 4, md: 8 }} py={8} position="relative" zIndex={1}>
       <Carousel title="The Most Relevant" items={featuredHotels} />
     </Box>
   );

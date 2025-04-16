@@ -75,7 +75,7 @@ export function Carousel({
     variant === "large" ? "300px" : variant === "medium" ? "400px" : "200px";
 
   return (
-    <Box position="relative">
+    <Box>
       <Text fontSize="3xl" color="white" fontWeight="bold" mb={4}>
         {title}
       </Text>

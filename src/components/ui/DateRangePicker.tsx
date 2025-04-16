@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -28,23 +28,34 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
   const [selectedEndDate, setSelectedEndDate] = useState(endDate);
-  const [isSelectingStart, setIsSelectingStart] = useState(true);
+  const [activeButton, setActiveButton] = useState<"start" | "end" | null>(
+    null
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // Update internal state when props change
+  useEffect(() => {
+    setSelectedStartDate(startDate);
+    setSelectedEndDate(endDate);
+  }, [startDate, endDate]);
+
   const handleDateSelect = (date: Date) => {
-    if (isSelectingStart) {
-      setSelectedStartDate(date);
-      setIsSelectingStart(false);
-    } else {
-      if (date < selectedStartDate) {
+    if (activeButton === "start") {
+      if (date > selectedEndDate) {
         setSelectedStartDate(date);
-        setSelectedEndDate(selectedStartDate);
+        setSelectedEndDate(date);
+      } else {
+        setSelectedStartDate(date);
+      }
+    } else if (activeButton === "end") {
+      if (date < selectedStartDate) {
+        setSelectedEndDate(date);
+        setSelectedStartDate(date);
       } else {
         setSelectedEndDate(date);
-        onChange?.(selectedStartDate, date);
-        onClose();
       }
     }
+    onChange?.(selectedStartDate, selectedEndDate);
   };
 
   const formatDate = (date: Date) => {
@@ -55,41 +66,74 @@ export function DateRangePicker({
     });
   };
 
+  const handleButtonClick = (button: "start" | "end") => {
+    setActiveButton(button);
+    onOpen();
+  };
+
   return (
-    <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
-      <PopoverTrigger>
-        <Button
-          variant="outline"
-          colorScheme="whiteAlpha"
-          color="white"
-          _hover={{ bg: "whiteAlpha.200" }}
-          onClick={onOpen}
-          leftIcon={<Icon as={LuCalendar} color="#D4B36A" />}
-          width="100%"
-          justifyContent="flex-start"
-          border="none"
-          bg="transparent"
-          _focus={{ boxShadow: "none" }}
-        >
-          {formatDate(selectedStartDate)} - {formatDate(selectedEndDate)}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent width="auto" bg="#333333" border="none">
-        <PopoverBody p={4}>
-          <VStack spacing={4}>
-            <Text color="#D4B36A" fontSize="sm">
-              {isSelectingStart
-                ? "Select check-in date"
-                : "Select check-out date"}
-            </Text>
+    <HStack spacing={2} width="100%">
+      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
+        <PopoverTrigger>
+          <Button
+            variant="ghost"
+            colorScheme="whiteAlpha"
+            color="white"
+            _hover={{
+              bg: "transparent",
+              textDecoration: "underline",
+              textDecorationColor: "white",
+            }}
+            onClick={() => handleButtonClick("start")}
+            leftIcon={<Icon as={LuCalendar} color="#D4B36A" />}
+            width="100%"
+            justifyContent="flex-start"
+            border="none"
+            bg="transparent"
+            _focus={{ boxShadow: "none" }}
+          >
+            {formatDate(selectedStartDate)}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent width="auto" bg="#333333" border="none" zIndex={20}>
+          <PopoverBody p={4}>
             <Calendar
-              value={isSelectingStart ? selectedStartDate : selectedEndDate}
+              startDate={selectedStartDate}
+              endDate={selectedEndDate}
               onChange={handleDateSelect}
-              minDate={isSelectingStart ? new Date() : selectedStartDate}
+              minDate={activeButton === "end" ? selectedStartDate : undefined}
             />
-          </VStack>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+
+      <Text color="white" mx={2}>
+        -
+      </Text>
+
+      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
+        <PopoverTrigger>
+          <Button
+            variant="ghost"
+            colorScheme="whiteAlpha"
+            color="white"
+            _hover={{
+              bg: "transparent",
+              textDecoration: "underline",
+              textDecorationColor: "white",
+            }}
+            onClick={() => handleButtonClick("end")}
+            leftIcon={<Icon as={LuCalendar} color="#D4B36A" />}
+            width="100%"
+            justifyContent="flex-start"
+            border="none"
+            bg="transparent"
+            _focus={{ boxShadow: "none" }}
+          >
+            {formatDate(selectedEndDate)}
+          </Button>
+        </PopoverTrigger>
+      </Popover>
+    </HStack>
   );
 }

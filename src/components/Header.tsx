@@ -20,18 +20,28 @@ import { FaLocationArrow } from "react-icons/fa";
 import { useSession } from "~/hooks/useSession";
 import { SearchBox } from "./ui/SearchBox";
 import { DateRangePicker } from "./ui/DateRangePicker";
+import { TravelersSelect } from "./ui/TravelersSelect";
 
 export default function Header() {
   const [location, setLocation] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [guests, setGuests] = useState("2 Adults, 1 Child");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
   const { username } = useSession();
 
   const handleDateChange = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
+    setIsDatePickerOpen(false);
+  };
+
+  const handleTravelersChange = (
+    adults: number,
+    children: number,
+    rooms: number
+  ) => {
+    // Handle travelers change if needed
   };
 
   return (
@@ -39,7 +49,7 @@ export default function Header() {
       position="relative"
       height="600px"
       width="100%"
-      overflow="hidden"
+      overflow="visible"
       borderBottom="1px solid red"
       _before={{
         content: '""',
@@ -116,6 +126,7 @@ export default function Header() {
             border="1px solid rgba(255, 255, 255, 0.2)"
             borderRadius="full"
             position="relative"
+            zIndex={10}
           >
             <HStack spacing={4} justify="space-between" width="100%">
               <Box flex={1}>
@@ -123,9 +134,12 @@ export default function Header() {
                   icon="location"
                   isSearchOpen={isSearchOpen}
                   onSearchOpen={setIsSearchOpen}
-                  placeholder="Where do you want to go?"
+                  placeholder={location || "Where do you want to go?"}
                   value={location}
-                  onChange={setLocation}
+                  onChange={(value) => {
+                    setLocation(value);
+                    setIsSearchOpen(false);
+                  }}
                 />
               </Box>
               <Box flex={1}>
@@ -135,25 +149,9 @@ export default function Header() {
                   onChange={handleDateChange}
                 />
               </Box>
-              <InputGroup size="lg" flex={1}>
-                <InputLeftElement pointerEvents="none">
-                  <Icon as={LuUsers} color="#D4B36A" />
-                </InputLeftElement>
-                <Input
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  color="white"
-                  border="none"
-                  _focus={{ boxShadow: "none" }}
-                  _placeholder={{ color: "white" }}
-                  sx={{
-                    "&::placeholder": { color: "white" },
-                    "&::-webkit-input-placeholder": { color: "white" },
-                    "&::-moz-placeholder": { color: "white" },
-                    "&:-ms-input-placeholder": { color: "white" },
-                  }}
-                />
-              </InputGroup>
+              <Box flex={1}>
+                <TravelersSelect onChange={handleTravelersChange} />
+              </Box>
               <Button variant="greeny" size="lg" px={8}>
                 Explore Stays
               </Button>

@@ -89,17 +89,14 @@ export function SearchBox({
 
   const handleCitySelect = (cityName: string) => {
     setSearchValue(cityName);
-    onChange?.(cityName);
+    if (onChange) {
+      onChange(cityName);
+    }
     onSearchOpen(false);
   };
 
   return (
-    <Flex
-      align="center"
-      ref={searchContainerRef}
-      position="relative"
-      zIndex={10000}
-    >
+    <Flex align="center" ref={searchContainerRef} position="relative">
       <HStack spacing={4} width="full">
         {!isSearchOpen && (
           <IconButton
@@ -164,7 +161,6 @@ export function SearchBox({
               mt={2}
               py={2}
               boxShadow="lg"
-              zIndex={9999}
             >
               <Text px={4} py={2} color="#D4B36A" fontSize="sm">
                 {searchValue === "" ? "Most popular" : "Locations"}
