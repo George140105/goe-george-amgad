@@ -16,6 +16,13 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
   LuGlobe,
@@ -25,6 +32,7 @@ import {
   LuSettings,
   LuUsers,
   LuPackage,
+  LuMenu,
 } from "react-icons/lu";
 import Image from "next/image";
 import { useSession } from "~/hooks/useSession";
@@ -60,6 +68,7 @@ export default function NavBar() {
   const { isAuthenticated, logout, setUsername } = useSession();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleLogin = () => {
     setUsername("George");
@@ -75,6 +84,14 @@ export default function NavBar() {
     { label: "Invite friends", icon: LuUsers },
     { label: "Settings", icon: LuSettings },
     { label: "Log out", icon: LuUser, color: "#FF5A5A" },
+  ];
+
+  const navigationLinks = [
+    { label: "GOE", href: "#", color: "#D4B36A" },
+    { label: "EgyBook", href: "#" },
+    { label: "EgyExplore", href: "#" },
+    { label: "EgyTales", href: "#" },
+    { label: "EgyTreasure", href: "#" },
   ];
 
   return (
@@ -139,7 +156,7 @@ export default function NavBar() {
             />
           </HStack>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Desktop */}
           <HStack
             spacing={12}
             justify="center"
@@ -147,21 +164,37 @@ export default function NavBar() {
             opacity={isSearchOpen ? 0.3 : 1}
             transition="all 0.3s ease-in-out"
             transform={isSearchOpen ? "translateX(100px)" : "translateX(0)"}
+            display={{ base: "none", md: "flex" }}
           >
-            <Link
-              href="#"
-              color="#D4B36A"
-              fontWeight="medium"
-              fontSize="lg"
-              fontFamily="var(--font-montserrat)"
-              _hover={{ color: "#E6C88D", textDecoration: "none" }}
-            >
-              GOE
-            </Link>
-            <NavLink>EgyBook</NavLink>
-            <NavLink>EgyExplore</NavLink>
-            <NavLink>EgyTales</NavLink>
-            <NavLink>EgyTreasure</NavLink>
+            {navigationLinks.map((link) => {
+              const [prefix, suffix] = link.label.split("Egy");
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  color={link.color || "white"}
+                  fontWeight="medium"
+                  fontSize="lg"
+                  fontFamily="var(--font-montserrat)"
+                  _hover={{
+                    color: link.color || "#E6C88D",
+                    textDecoration: "none",
+                  }}
+                >
+                  {prefix}
+                  {suffix && (
+                    <>
+                      <Text as="span" color="#D4B36A">
+                        Egy
+                      </Text>
+                      <Text as="span" color="white">
+                        {suffix}
+                      </Text>
+                    </>
+                  )}
+                </Link>
+              );
+            })}
           </HStack>
 
           {/* Right Side Actions */}
@@ -299,9 +332,74 @@ export default function NavBar() {
                 </Button>
               </>
             )}
+
+            {/* Mobile Menu Button */}
+            <IconButton
+              aria-label="Open menu"
+              icon={<LuMenu size={24} />}
+              variant="ghost"
+              size="md"
+              color="white"
+              display={{ base: "flex", md: "none" }}
+              onClick={onOpen}
+              _hover={{
+                bg: "transparent",
+                color: "#E6C88D",
+              }}
+            />
           </HStack>
         </Flex>
       </Box>
+
+      {/* Mobile Navigation Drawer */}
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent bg="black">
+          <DrawerCloseButton color="white" />
+          <DrawerHeader borderBottomWidth="1px" borderColor="gray.700">
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width={120}
+              height={40}
+              priority
+            />
+          </DrawerHeader>
+
+          <DrawerBody>
+            <VStack spacing={6} align="stretch" mt={4}>
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  color={link.color || "white"}
+                  fontWeight="medium"
+                  fontSize="lg"
+                  fontFamily="var(--font-montserrat)"
+                  _hover={{
+                    color: link.color || "#E6C88D",
+                    textDecoration: "none",
+                  }}
+                  onClick={onClose}
+                >
+                  {link.label}
+                </Link>
+              ))}
+
+              {!isAuthenticated && (
+                <VStack spacing={4} mt={4}>
+                  <Button variant="sunny" width="100%" onClick={handleLogin}>
+                    Login
+                  </Button>
+                  <Button variant="sunny" width="100%">
+                    Sign up
+                  </Button>
+                </VStack>
+              )}
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

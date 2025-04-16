@@ -1,5 +1,11 @@
 import { useState, useRef } from "react";
-import { Box, IconButton, Text, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  IconButton,
+  Text,
+  Flex,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { LargeCard } from "./LargeCard";
 import { ThinCard } from "./ThinCard";
@@ -45,11 +51,23 @@ export function Carousel({
   const [isAnimating, setIsAnimating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Adjust items per page based on screen size
+  const responsiveItemsPerPage =
+    variant === "large"
+      ? { base: 2, md: 4 }
+      : variant === "medium"
+      ? { base: 2, md: 3 }
+      : { base: 3, md: 6 };
+
+  // Get the current items per page based on screen size
+  const currentItemsPerPage =
+    useBreakpointValue(responsiveItemsPerPage) || itemsPerPage;
+
   const nextSlide = () => {
     if (isAnimating) return;
     setIsAnimating(true);
 
-    if (currentIndex >= items.length - itemsPerPage) {
+    if (currentIndex >= items.length - currentItemsPerPage) {
       setCurrentIndex(0);
     } else {
       setCurrentIndex((prev) => prev + 1);
@@ -63,7 +81,7 @@ export function Carousel({
     setIsAnimating(true);
 
     if (currentIndex <= 0) {
-      setCurrentIndex(items.length - itemsPerPage);
+      setCurrentIndex(items.length - currentItemsPerPage);
     } else {
       setCurrentIndex((prev) => prev - 1);
     }
@@ -102,7 +120,9 @@ export function Carousel({
           gap={4}
           position="relative"
           transition="transform 0.5s ease-in-out"
-          transform={`translateX(${-currentIndex * (100 / itemsPerPage)}%)`}
+          transform={`translateX(${
+            -currentIndex * (100 / currentItemsPerPage)
+          }%)`}
           style={{
             willChange: "transform",
           }}

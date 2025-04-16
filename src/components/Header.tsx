@@ -128,8 +128,15 @@ export default function Header() {
             position="relative"
             zIndex={10}
           >
-            <HStack spacing={4} justify="space-between" width="100%">
-              <Box flex={1}>
+            <HStack
+              spacing={4}
+              justify="space-between"
+              width="100%"
+              direction={{ base: "column", md: "row" }}
+              align={{ base: "stretch", md: "center" }}
+              as={Flex}
+            >
+              <Box flex={1} mb={{ base: 4, md: 0 }}>
                 <SearchBox
                   icon="location"
                   isSearchOpen={isSearchOpen}
@@ -142,17 +149,22 @@ export default function Header() {
                   }}
                 />
               </Box>
-              <Box flex={1}>
+              <Box flex={1} mb={{ base: 4, md: 0 }}>
                 <DateRangePicker
                   startDate={startDate}
                   endDate={endDate}
                   onChange={handleDateChange}
                 />
               </Box>
-              <Box flex={1}>
+              <Box flex={1} mb={{ base: 4, md: 0 }}>
                 <TravelersSelect onChange={handleTravelersChange} />
               </Box>
-              <Button variant="greeny" size="lg" px={8}>
+              <Button
+                variant="greeny"
+                size="lg"
+                px={8}
+                width={{ base: "100%", md: "auto" }}
+              >
                 Explore Stays
               </Button>
             </HStack>
