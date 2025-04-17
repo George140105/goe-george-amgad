@@ -40,22 +40,29 @@ export function DateRangePicker({
   }, [startDate, endDate]);
 
   const handleDateSelect = (date: Date) => {
+    let newStartDate = selectedStartDate;
+    let newEndDate = selectedEndDate;
+
     if (activeButton === "start") {
       if (date > selectedEndDate) {
-        setSelectedStartDate(date);
-        setSelectedEndDate(date);
+        newStartDate = date;
+        newEndDate = date;
       } else {
-        setSelectedStartDate(date);
+        newStartDate = date;
       }
     } else if (activeButton === "end") {
       if (date < selectedStartDate) {
-        setSelectedEndDate(date);
-        setSelectedStartDate(date);
+        newEndDate = date;
+        newStartDate = date;
       } else {
-        setSelectedEndDate(date);
+        newEndDate = date;
       }
     }
-    onChange?.(selectedStartDate, selectedEndDate);
+
+    setSelectedStartDate(newStartDate);
+    setSelectedEndDate(newEndDate);
+    onChange?.(newStartDate, newEndDate);
+    onClose();
   };
 
   const formatDate = (date: Date) => {
@@ -73,7 +80,12 @@ export function DateRangePicker({
 
   return (
     <HStack spacing={2} width="100%">
-      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
+      <Popover
+        isOpen={isOpen}
+        onClose={onClose}
+        placement="bottom-start"
+        closeOnBlur={false}
+      >
         <PopoverTrigger>
           <Button
             variant="ghost"
@@ -102,6 +114,7 @@ export function DateRangePicker({
               endDate={selectedEndDate}
               onChange={handleDateSelect}
               minDate={activeButton === "end" ? selectedStartDate : undefined}
+              onClose={onClose}
             />
           </PopoverBody>
         </PopoverContent>
@@ -111,7 +124,12 @@ export function DateRangePicker({
         -
       </Text>
 
-      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
+      <Popover
+        isOpen={isOpen}
+        onClose={onClose}
+        placement="bottom-start"
+        closeOnBlur={false}
+      >
         <PopoverTrigger>
           <Button
             variant="ghost"

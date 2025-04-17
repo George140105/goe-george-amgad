@@ -161,6 +161,7 @@ export function SearchBox({
               mt={2}
               py={2}
               boxShadow="lg"
+              zIndex={50}
             >
               <Text px={4} py={2} color="#D4B36A" fontSize="sm">
                 {searchValue === "" ? "Most popular" : "Locations"}

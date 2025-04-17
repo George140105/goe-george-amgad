@@ -1,6 +1,14 @@
 import { useState } from "react";
-import { Box, Grid, Text, VStack, HStack, IconButton } from "@chakra-ui/react";
-import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import {
+  Box,
+  Grid,
+  Text,
+  VStack,
+  HStack,
+  IconButton,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { LuChevronLeft, LuChevronRight, LuX } from "react-icons/lu";
 
 interface CalendarProps {
   startDate?: Date;
@@ -8,6 +16,7 @@ interface CalendarProps {
   onChange?: (date: Date) => void;
   minDate?: Date;
   maxDate?: Date;
+  onClose?: () => void;
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -32,8 +41,14 @@ export function Calendar({
   onChange,
   minDate,
   maxDate,
+  onClose,
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(startDate);
+  const showTwoMonths = useBreakpointValue({ base: false, md: true });
+
+  // Get today's date at the start of the day for comparison
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -93,6 +108,7 @@ export function Calendar({
   };
 
   const isDateDisabled = (date: Date) => {
+    if (date < today) return true; // Disable dates before today
     if (minDate && date < minDate) return true;
     if (maxDate && date > maxDate) return true;
     return false;
@@ -107,7 +123,7 @@ export function Calendar({
 
   const renderMonth = (date: Date, days: (Date | null)[]) => (
     <VStack spacing={4} width="100%">
-      <Text color="white" fontWeight="bold">
+      <Text color="white" fontWeight="bold" textAlign="center">
         {MONTHS[date.getMonth()]} {date.getFullYear()}
       </Text>
       <Grid templateColumns="repeat(7, 1fr)" gap={1} width="100%">
@@ -127,7 +143,7 @@ export function Calendar({
             key={index}
             textAlign="center"
             p={2}
-            cursor={date ? "pointer" : "default"}
+            cursor={date && !isDateDisabled(date) ? "pointer" : "not-allowed"}
             opacity={date ? 1 : 0}
             position="relative"
             bg={
@@ -147,9 +163,7 @@ export function Calendar({
                 : "white"
             }
             textDecoration={
-              date && isDateDisabled(date) && !isStartDate(date)
-                ? "line-through"
-                : "none"
+              date && isDateDisabled(date) ? "line-through" : "none"
             }
             borderRadius="md"
             overflow="hidden"
@@ -165,7 +179,9 @@ export function Calendar({
                   }
                 : {}
             }
-            onClick={() => date && handleDateClick(date)}
+            onClick={() =>
+              date && !isDateDisabled(date) && handleDateClick(date)
+            }
           >
             {date && (isStartDate(date) || isEndDate(date)) && (
               <Box
@@ -189,26 +205,60 @@ export function Calendar({
     </VStack>
   );
 
+  const handleCalendarClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <VStack spacing={4} width="100%" p={4} borderRadius="md">
+    <VStack
+      spacing={4}
+      width="100%"
+      p={4}
+      borderRadius="md"
+      onClick={handleCalendarClick}
+      position="relative"
+    >
+      {onClose && (
+        <IconButton
+          aria-label="Close calendar"
+          icon={<LuX />}
+          variant="ghost"
+          color="#D4B36A"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          size="sm"
+          position="absolute"
+          top={2}
+          right={2}
+          zIndex={1}
+        />
+      )}
       <HStack justify="space-between" width="100%">
         <IconButton
           aria-label="Previous month"
           icon={<LuChevronLeft />}
           variant="ghost"
           color="#D4B36A"
-          onClick={handlePrevMonth}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePrevMonth();
+          }}
         />
         <HStack spacing={8} width="100%">
           {renderMonth(currentDate, currentMonthDays)}
-          {renderMonth(nextMonth, nextMonthDays)}
+          {showTwoMonths && renderMonth(nextMonth, nextMonthDays)}
         </HStack>
         <IconButton
           aria-label="Next month"
           icon={<LuChevronRight />}
           variant="ghost"
           color="#D4B36A"
-          onClick={handleNextMonth}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleNextMonth();
+          }}
         />
       </HStack>
     </VStack>

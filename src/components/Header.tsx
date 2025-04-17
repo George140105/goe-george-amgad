@@ -121,22 +121,22 @@ export default function Header() {
           <Box
             bg="rgba(255, 255, 255, 0.1)"
             backdropFilter="blur(8px)"
-            p={6}
+            p={{ base: 4, md: 6 }}
             boxShadow="xl"
             border="1px solid rgba(255, 255, 255, 0.2)"
-            borderRadius="full"
+            borderRadius={{ base: "3xl", md: "full" }}
             position="relative"
-            zIndex={10}
+            zIndex={20}
+            width="100%"
           >
-            <HStack
-              spacing={4}
-              justify="space-between"
-              width="100%"
+            <Flex
               direction={{ base: "column", md: "row" }}
-              align={{ base: "stretch", md: "center" }}
-              as={Flex}
+              spacing={4}
+              width="100%"
+              gap={4}
+              position="relative"
             >
-              <Box flex={1} mb={{ base: 4, md: 0 }}>
+              <Box flex={1}>
                 <SearchBox
                   icon="location"
                   isSearchOpen={isSearchOpen}
@@ -149,14 +149,14 @@ export default function Header() {
                   }}
                 />
               </Box>
-              <Box flex={1} mb={{ base: 4, md: 0 }}>
+              <Box flex={1}>
                 <DateRangePicker
                   startDate={startDate}
                   endDate={endDate}
                   onChange={handleDateChange}
                 />
               </Box>
-              <Box flex={1} mb={{ base: 4, md: 0 }}>
+              <Box flex={1}>
                 <TravelersSelect onChange={handleTravelersChange} />
               </Box>
               <Button
@@ -164,10 +164,11 @@ export default function Header() {
                 size="lg"
                 px={8}
                 width={{ base: "100%", md: "auto" }}
+                mt={{ base: 2, md: 0 }}
               >
                 Explore Stays
               </Button>
-            </HStack>
+            </Flex>
           </Box>
         </Flex>
       </Container>

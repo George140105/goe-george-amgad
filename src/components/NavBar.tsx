@@ -23,6 +23,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  DrawerFooter,
 } from "@chakra-ui/react";
 import {
   LuGlobe,
@@ -226,14 +227,8 @@ export default function NavBar() {
 
             {isAuthenticated ? (
               <>
-                <Box
-                  height="24px"
-                  width="1px"
-                  bg="gray.600"
-                  mx={2}
-                  display={{ base: "none", md: "block" }}
-                />
-                <HStack spacing={4}>
+                <Box height="24px" width="1px" bg="gray.600" mx={2} />
+                <HStack spacing={4} display={{ base: "none", md: "flex" }}>
                   <IconButton
                     aria-label="Favorites"
                     icon={<LuHeart size={24} />}
@@ -357,47 +352,192 @@ export default function NavBar() {
         <DrawerContent bg="black">
           <DrawerCloseButton color="white" />
           <DrawerHeader borderBottomWidth="1px" borderColor="gray.700">
-            <Image
-              src="/logo.svg"
-              alt="Logo"
-              width={120}
-              height={40}
-              priority
-            />
+            <Flex align="center">
+              <Text color="#D4B36A" fontSize="3xl" fontWeight="bold">
+                Egy
+              </Text>
+              <Text color="white" fontSize="3xl" fontWeight="bold">
+                Book
+              </Text>
+            </Flex>
           </DrawerHeader>
 
           <DrawerBody>
-            <VStack spacing={6} align="stretch" mt={4}>
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  color={link.color || "white"}
-                  fontWeight="medium"
-                  fontSize="lg"
-                  fontFamily="var(--font-montserrat)"
-                  _hover={{
-                    color: link.color || "#E6C88D",
-                    textDecoration: "none",
-                  }}
-                  onClick={onClose}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {!isAuthenticated && (
-                <VStack spacing={4} mt={4}>
-                  <Button variant="sunny" width="100%" onClick={handleLogin}>
+            <VStack spacing={8} align="start" mt={6}>
+              {!isAuthenticated ? (
+                <VStack spacing={6} align="start" width="100%">
+                  <HStack spacing={2}>
+                    <IconButton
+                      aria-label="Switch language"
+                      icon={<LuGlobe size={20} />}
+                      variant="ghost"
+                      size="md"
+                      color="white"
+                      _hover={{
+                        bg: "transparent",
+                        color: "#E6C88D",
+                      }}
+                    />
+                    <Text
+                      variant="unstyled"
+                      color="white"
+                      width="100%"
+                      height="auto"
+                      fontSize="32px"
+                      fontWeight="normal"
+                      textAlign="left"
+                      _hover={{ color: "#E6C88D" }}
+                    >
+                      EN
+                    </Text>
+                  </HStack>
+                  <Button
+                    variant="unstyled"
+                    color="white"
+                    width="100%"
+                    height="auto"
+                    onClick={handleLogin}
+                    fontSize="32px"
+                    fontWeight="normal"
+                    textAlign="left"
+                    _hover={{ color: "#E6C88D" }}
+                  >
                     Login
                   </Button>
-                  <Button variant="sunny" width="100%">
+                  <Button
+                    variant="unstyled"
+                    color="white"
+                    width="100%"
+                    height="auto"
+                    fontSize="32px"
+                    fontWeight="normal"
+                    textAlign="left"
+                    _hover={{ color: "#E6C88D" }}
+                  >
                     Sign up
                   </Button>
+                </VStack>
+              ) : (
+                <VStack spacing={6} align="start" width="100%">
+                  <HStack spacing={2}>
+                    <IconButton
+                      aria-label="Favorites"
+                      icon={<LuHeart size={24} />}
+                      variant="ghost"
+                      size="md"
+                      color="white"
+                      _hover={{
+                        bg: "transparent",
+                        color: "#E6C88D",
+                      }}
+                    />
+                    <Button
+                      variant="unstyled"
+                      color="white"
+                      width="100%"
+                      height="auto"
+                      fontSize="32px"
+                      fontWeight="normal"
+                      textAlign="left"
+                      _hover={{ color: "#E6C88D" }}
+                    >
+                      Wishlist
+                    </Button>
+                  </HStack>{" "}
+                  <HStack spacing={2}>
+                    <IconButton
+                      aria-label="Shopping Cart"
+                      icon={<LuShoppingCart size={24} />}
+                      variant="ghost"
+                      size="md"
+                      color="white"
+                      _hover={{
+                        bg: "transparent",
+                        color: "#E6C88D",
+                      }}
+                    />
+                    <Button
+                      variant="unstyled"
+                      color="white"
+                      width="100%"
+                      height="auto"
+                      fontSize="32px"
+                      fontWeight="normal"
+                      textAlign="left"
+                      _hover={{ color: "#E6C88D" }}
+                    >
+                      Cart
+                    </Button>
+                  </HStack>{" "}
+                  <HStack spacing={2}>
+                    <IconButton
+                      aria-label="Switch language"
+                      icon={<LuGlobe size={20} />}
+                      variant="ghost"
+                      size="md"
+                      color="white"
+                      _hover={{
+                        bg: "transparent",
+                        color: "#E6C88D",
+                      }}
+                    />
+                    <Text
+                      variant="unstyled"
+                      color="white"
+                      width="100%"
+                      height="auto"
+                      fontSize="32px"
+                      fontWeight="normal"
+                      textAlign="left"
+                      _hover={{ color: "#E6C88D" }}
+                    >
+                      EN
+                    </Text>
+                  </HStack>
+                  <VStack align="stretch" spacing={1}>
+                    {profileMenu.map((item) => (
+                      <Flex
+                        key={item.label}
+                        px={4}
+                        align="center"
+                        cursor="pointer"
+                        color={
+                          item.label === "Log out"
+                            ? "#FF5A5A"
+                            : item.label === "My profile"
+                            ? "#D4B36A"
+                            : "white"
+                        }
+                        _hover={{
+                          color: "#D4B36A",
+                        }}
+                        transition="background 0.2s"
+                        onClick={() => {
+                          if (item.label === "Log out") {
+                            handleLogout();
+                          }
+                        }}
+                      >
+                        <Icon as={item.icon} boxSize={5} mr={3} />
+                        <Text fontSize="xl">{item.label}</Text>
+                      </Flex>
+                    ))}
+                  </VStack>
                 </VStack>
               )}
             </VStack>
           </DrawerBody>
+          <DrawerFooter display="flex" justifyContent="center" mb={4}>
+            <Box flexShrink={0}>
+              <Image
+                src="/LOGO 2.svg"
+                alt="Logo"
+                width={120}
+                height={40}
+                priority
+              />
+            </Box>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
